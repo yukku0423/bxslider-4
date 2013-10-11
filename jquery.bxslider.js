@@ -141,6 +141,8 @@
 			slider.maxThreshold = (slider.settings.maxSlides * slider.settings.slideWidth) + ((slider.settings.maxSlides - 1) * slider.settings.slideMargin);
 			// store the current state of the slider (if currently animating, working is true)
 			slider.working = false;
+			// disable slider if true
+			slider.disabled = false;
 			// initialize the controls object
 			slider.controls = {};
 			// initialize an auto interval
@@ -963,6 +965,8 @@
 		var onTouchStart = function(e){
 			if(slider.working){
 				e.preventDefault();
+			}else if(slider.disabled){
+				// do nothing.
 			}else{
 				// record the original position when touch starts
 				slider.touch.originalPos = el.position();
@@ -1094,7 +1098,7 @@
 		 */
 		el.goToSlide = function(slideIndex, direction){
 			// if plugin is currently in motion, ignore request
-			if(slider.working || slider.active.index == slideIndex) return;
+			if(slider.disabled || slider.working || slider.active.index == slideIndex) return;
 			// declare that plugin is in motion
 			slider.working = true;
 			// store the old index
@@ -1295,6 +1299,20 @@
 			if(slider.controls.autoEl) slider.controls.autoEl.remove();
 			clearInterval(slider.interval);
 			if(slider.settings.responsive) $(window).unbind('resize', resizeWindow);
+		}
+
+		/**
+		 * Disable slider
+		 */
+		el.disableSlider = function(){
+			slider.disabled = true;
+		}
+
+		/**
+		 * Enable slider
+		 */
+		el.enableSlider = function(){
+			slider.disabled = false;
 		}
 
 		/**
